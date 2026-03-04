@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, Search } from 'lucide-react';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 export default function Team() {
   const { user } = useAuth();
