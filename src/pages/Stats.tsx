@@ -51,7 +51,7 @@ export default function Stats() {
       <div className="mt-8 p-4 bg-gray-100 rounded-xl">
         <h3 className="font-bold mb-2">Admin Tools</h3>
         <button 
-          onClick={() => fetch('${API_URL}/api/cron/run', { method: 'POST' }).then(res => res.json()).then(d => alert(`Created ${d.created} tasks`))}
+          onClick={() => fetch(`${API_URL}/api/cron/run`, { method: 'POST' }).then(res => res.json()).then(d => alert(`Created ${d.created} tasks`))}
           className="bg-black text-white px-4 py-2 rounded-lg text-sm"
         >
           Run Daily Cron (Simulate)
