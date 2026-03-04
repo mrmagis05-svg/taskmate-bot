@@ -1,5 +1,5 @@
 {
-  "name": "taskmate-bot",
+  "name": "taskmate-worker",
   "main": "worker.ts",
   "compatibility_date": "2024-03-04",
   "d1_databases": [
