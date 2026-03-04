@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_URL } from '../config';
 
 export default function WebhookSimulator() {
   const [username, setUsername] = useState('newuser');
@@ -8,7 +9,7 @@ export default function WebhookSimulator() {
 
   const sendWebhook = async () => {
     try {
-      const res = await fetch('/webhook/telegram', {
+      const res = await fetch(`${API_URL}/webhook/telegram`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
