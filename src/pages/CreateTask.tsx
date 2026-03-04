@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, Repeat } from 'lucide-react';
@@ -19,9 +19,7 @@ export default function CreateTask() {
   });
 
   useEffect(() => {
-
-    fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
-
+    fetch(`${API_URL}/api/users`, { headers: getAuthHeaders() }).then(res => res.json()).then(setUsers);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

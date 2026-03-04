@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
@@ -12,6 +13,7 @@ import Tasks from './pages/Tasks';
 import CreateTask from './pages/CreateTask';
 import Team from './pages/Team';
 import Stats from './pages/Stats';
+import Overdue from './pages/Overdue';
 
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -35,10 +37,6 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           
           <Route path="/" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
-import Overdue from './pages/Overdue';
-
-// ...
-
           <Route path="/tasks" element={<ProtectedLayout><Tasks /></ProtectedLayout>} />
           <Route path="/overdue" element={<ProtectedLayout><Overdue /></ProtectedLayout>} />
           <Route path="/create-task" element={<ProtectedLayout><CreateTask /></ProtectedLayout>} />

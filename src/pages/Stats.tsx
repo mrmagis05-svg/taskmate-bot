@@ -3,7 +3,6 @@ import WebhookSimulator from '../components/WebhookSimulator';
 import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
 
-
 const data = [
   { name: 'Пн', tasks: 12 },
   { name: 'Вт', tasks: 19 },
@@ -23,7 +22,7 @@ export default function Stats() {
       headers: getAuthHeaders()
     })
     .then(res => res.json())
-    .then(d => alert(`Created ${d.created} tasks`))
+    .then((d: any) => alert(`Created ${d.created} tasks`))
     .catch(console.error);
   };
 
@@ -65,8 +64,7 @@ export default function Stats() {
       <div className="mt-8 p-4 bg-gray-100 rounded-xl">
         <h3 className="font-bold mb-2">Admin Tools</h3>
         <button 
-
-          onClick={() => fetch(`${API_URL}/api/cron/run`, { method: 'POST' }).then(res => res.json()).then(d => alert(`Created ${d.created} tasks`))}
+          onClick={runCron}
           className="bg-black text-white px-4 py-2 rounded-lg text-sm"
         >
           Run Daily Cron (Simulate)
