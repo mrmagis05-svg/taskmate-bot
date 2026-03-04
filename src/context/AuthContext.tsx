@@ -75,7 +75,7 @@ export function useAuth() {
 // Helper to fetch users for the mock login screen
 export async function fetchUsers() {
   try {
-    const res = await fetch('/api/users');
+    const res = await fetch('https://taskmate-worker.mr-magis05.workers.dev/api/users');
     return await res.json();
   } catch (e) {
     console.error(e);
