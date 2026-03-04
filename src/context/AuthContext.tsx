@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 // Mock types for our auth context
 export type UserRole = 'admin' | 'manager' | 'employee';
