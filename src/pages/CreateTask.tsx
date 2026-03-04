@@ -19,7 +19,7 @@ export default function CreateTask() {
   });
 
   useEffect(() => {
-    fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
+    fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +30,7 @@ export default function CreateTask() {
     }
 
     try {
-      await fetch('${API_URL}/api/tasks', {
+      await fetch(`${API_URL}/api/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
