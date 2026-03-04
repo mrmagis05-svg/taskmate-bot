@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CheckCircle2, Circle, Clock, AlertCircle, Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { API_URL } from "./config"
 
 interface Task {
   id: number;
@@ -28,7 +29,7 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
   const fetchTasks = async () => {
     if (!user) return;
     try {
-      const res = await fetch(`/api/tasks?user_id=${user.id}&role=${user.role}`);
+      const res = await fetch(`${API_URL}/api/tasks?user_id=${user.id}&role=${user.role}`);
       const data = await res.json();
       setTasks(data);
     } catch (e) {
@@ -40,7 +41,7 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
 
   const handleStatusChange = async (taskId: number, newStatus: string) => {
     try {
-      await fetch(`/api/tasks/${taskId}/status`, {
+      await fetch(`${API_URL}/api/tasks/${taskId}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus, user_id: user?.id })
