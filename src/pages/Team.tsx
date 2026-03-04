@@ -10,15 +10,15 @@ export default function Team() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
+    fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
     if (user?.role === 'admin') {
-      fetch('${API_URL}/api/telegram/cache').then(res => res.json()).then(setCachedUsers);
+      fetch(`${API_URL}/api/telegram/cache`).then(res => res.json()).then(setCachedUsers);
     }
   }, [user]);
 
   const handleCreateUser = async (cachedUser: any, role: string) => {
     try {
-      await fetch('${API_URL}/api/users', {
+      await fetch(`${API_URL}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -32,7 +32,7 @@ export default function Team() {
         })
       });
       setShowAddModal(false);
-      fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
+      fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
     } catch (e) {
       console.error(e);
     }
