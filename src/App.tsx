@@ -35,8 +35,12 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           
           <Route path="/" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
+import Overdue from './pages/Overdue';
+
+// ...
+
           <Route path="/tasks" element={<ProtectedLayout><Tasks /></ProtectedLayout>} />
-          <Route path="/overdue" element={<ProtectedLayout><Tasks filter="overdue" /></ProtectedLayout>} />
+          <Route path="/overdue" element={<ProtectedLayout><Overdue /></ProtectedLayout>} />
           <Route path="/create-task" element={<ProtectedLayout><CreateTask /></ProtectedLayout>} />
           <Route path="/team" element={<ProtectedLayout><Team /></ProtectedLayout>} />
           <Route path="/stats" element={<ProtectedLayout><Stats /></ProtectedLayout>} />

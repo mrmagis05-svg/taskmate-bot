@@ -1,5 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import WebhookSimulator from '../components/WebhookSimulator';
+import { API_URL } from '../config';
+import { useAuth } from '../context/AuthContext';
 
 const data = [
   { name: 'Пн', tasks: 12 },
@@ -12,6 +14,18 @@ const data = [
 ];
 
 export default function Stats() {
+  const { user, getAuthHeaders } = useAuth();
+
+  const runCron = () => {
+    fetch(`${API_URL}/api/cron/run`, { 
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    .then(res => res.json())
+    .then(d => alert(`Created ${d.created} tasks`))
+    .catch(console.error);
+  };
+
   return (
     <div className="p-4 pb-24">
       <h1 className="text-2xl font-bold mb-6">Статистика</h1>
@@ -50,7 +64,7 @@ export default function Stats() {
       <div className="mt-8 p-4 bg-gray-100 rounded-xl">
         <h3 className="font-bold mb-2">Admin Tools</h3>
         <button 
-          onClick={() => fetch('/api/cron/run', { method: 'POST' }).then(res => res.json()).then(d => alert(`Created ${d.created} tasks`))}
+          onClick={runCron}
           className="bg-black text-white px-4 py-2 rounded-lg text-sm"
         >
           Run Daily Cron (Simulate)

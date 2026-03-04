@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CheckCircle2, Circle, Clock, AlertCircle, Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { API_URL } from '../config';
+import TaskDetails from '../components/TaskDetails';
 
 interface Task {
   id: number;
@@ -16,19 +18,27 @@ interface Task {
 }
 
 export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
-  const { user } = useAuth();
+  const { user, getAuthHeaders } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'all' | 'my' | 'pending' | 'completed'>('all');
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   useEffect(() => {
     fetchTasks();
-  }, [user]);
+  }, [user, filter]);
 
   const fetchTasks = async () => {
     if (!user) return;
     try {
-      const res = await fetch(`/api/tasks?user_id=${user.id}&role=${user.role}`);
+      let url = `${API_URL}/api/tasks?`;
+      if (filter === 'overdue') {
+        url += 'overdue=true';
+      }
+      
+      const res = await fetch(url, {
+        headers: getAuthHeaders()
+      });
       const data = await res.json();
       setTasks(data);
     } catch (e) {
@@ -40,9 +50,9 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
 
   const handleStatusChange = async (taskId: number, newStatus: string) => {
     try {
-      await fetch(`/api/tasks/${taskId}/status`, {
+      await fetch(`${API_URL}/api/tasks/${taskId}/status`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ status: newStatus, user_id: user?.id })
       });
       fetchTasks();
@@ -112,10 +122,14 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
           </div>
         ) : (
           filteredTasks.map(task => (
-            <div key={task.id} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+            <div 
+              key={task.id} 
+              className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={() => setSelectedTask(task)}
+            >
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-medium text-gray-900">{task.title}</h3>
-                <button onClick={() => handleStatusChange(task.id, task.status === 'completed' ? 'pending' : 'completed')}>
+                <button onClick={(e) => { e.stopPropagation(); handleStatusChange(task.id, task.status === 'completed' ? 'pending' : 'completed'); }}>
                   {getStatusIcon(task.status)}
                 </button>
               </div>
@@ -143,6 +157,10 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
           ))
         )}
       </div>
+
+      {selectedTask && (
+        <TaskDetails taskId={selectedTask.id} onClose={() => setSelectedTask(null)} />
+      )}
     </div>
   );
 }

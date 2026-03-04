@@ -3,9 +3,10 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, Repeat } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { API_URL } from '../config';
 
 export default function CreateTask() {
-  const { user } = useAuth();
+  const { user, getAuthHeaders } = useAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -13,11 +14,12 @@ export default function CreateTask() {
     description: '',
     assigned_user_ids: [] as number[],
     due_date: '',
-    repeat_rule: 'none'
+    repeat_rule: 'none',
+    priority: 'normal'
   });
 
   useEffect(() => {
-    fetch('/api/users').then(res => res.json()).then(setUsers);
+    fetch(`${API_URL}/api/users`, { headers: getAuthHeaders() }).then(res => res.json()).then(setUsers);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,13 +30,13 @@ export default function CreateTask() {
     }
 
     try {
-      await fetch('/api/tasks', {
+      await fetch(`${API_URL}/api/tasks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           ...formData,
           creator_user_id: user?.id,
-          establishment_id: user?.establishment_id || 1, // Default for demo
+          establishment_id: user?.establishment_id || 1,
           repeat_rule_json: formData.repeat_rule === 'none' ? null : JSON.stringify({ type: formData.repeat_rule })
         })
       });

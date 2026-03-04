@@ -19,6 +19,7 @@ interface AuthContextType {
   login: (userId: number) => void;
   logout: () => void;
   isLoading: boolean;
+  getAuthHeaders: () => Record<string, string>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,27 +28,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check local storage for persisted mock session
-    const storedUserId = localStorage.getItem('mock_user_id');
-    if (storedUserId) {
-      fetchUsers().then(users => {
-        const found = users.find((u: User) => u.id === parseInt(storedUserId));
-        if (found) setUser(found);
-        setIsLoading(false);
-      });
-    } else {
-      setIsLoading(false);
+  const getAuthHeaders = () => {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (user) {
+      if (user.telegram_chat_id) {
+        headers['x-chat-id'] = user.telegram_chat_id.toString();
+      }
+      // Also send dev ID for fallback/hybrid testing
+      headers['x-dev-user-id'] = user.id.toString();
     }
+    return headers;
+  };
+
+  useEffect(() => {
+    const initAuth = async () => {
+      // 1. Check Telegram WebApp
+      const tg = (window as any).Telegram?.WebApp;
+      if (tg?.initDataUnsafe?.user?.id) {
+        const tgUserId = tg.initDataUnsafe.user.id;
+        try {
+          const users = await fetchUsers();
+          const found = users.find((u: User) => u.telegram_chat_id === tgUserId);
+          if (found) {
+            setUser(found);
+            setIsLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.error("Failed to fetch users for TG auth", e);
+        }
+      }
+
+      // 2. Check local storage for persisted mock session
+      const storedUserId = localStorage.getItem('mock_user_id');
+      if (storedUserId) {
+        try {
+          const users = await fetchUsers();
+          const found = users.find((u: User) => u.id === parseInt(storedUserId));
+          if (found) setUser(found);
+        } catch (e) {
+          console.error("Failed to fetch users for local auth", e);
+        }
+      }
+      
+      setIsLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = async (userId: number) => {
     setIsLoading(true);
-    const users = await fetchUsers();
-    const found = users.find((u: User) => u.id === userId);
-    if (found) {
-      setUser(found);
-      localStorage.setItem('mock_user_id', userId.toString());
+    try {
+      const users = await fetchUsers();
+      const found = users.find((u: User) => u.id === userId);
+      if (found) {
+        setUser(found);
+        localStorage.setItem('mock_user_id', userId.toString());
+      }
+    } catch (e) {
+      console.error(e);
     }
     setIsLoading(false);
   };
@@ -58,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading, getAuthHeaders }}>
       {children}
     </AuthContext.Provider>
   );
@@ -72,10 +114,15 @@ export function useAuth() {
   return context;
 }
 
+import { API_URL } from '../config';
+
 // Helper to fetch users for the mock login screen
 export async function fetchUsers() {
   try {
-    const res = await fetch('/api/users');
+    // We might need a special header or just allow public access for this specific endpoint
+    // for the sake of the "login screen" which lists users.
+    const res = await fetch(`${API_URL}/api/users`);
+    if (!res.ok) throw new Error('Failed to fetch users');
     return await res.json();
   } catch (e) {
     console.error(e);

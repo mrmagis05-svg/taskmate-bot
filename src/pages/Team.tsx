@@ -1,37 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, Search } from 'lucide-react';
+import { API_URL } from '../config';
 
 export default function Team() {
-  const { user } = useAuth();
+  const { user, getAuthHeaders } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
   const [cachedUsers, setCachedUsers] = useState<any[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    fetch('/api/users').then(res => res.json()).then(setUsers);
-    if (user?.role === 'admin') {
-      fetch('/api/telegram/cache').then(res => res.json()).then(setCachedUsers);
-    }
+    loadData();
   }, [user]);
+
+  const loadData = () => {
+    fetch(`${API_URL}/api/users`, { headers: getAuthHeaders() }).then(res => res.json()).then(setUsers).catch(console.error);
+    if (user?.role === 'admin') {
+      fetch(`${API_URL}/api/telegram/cache`, { headers: getAuthHeaders() }).then(res => res.json()).then(setCachedUsers).catch(console.error);
+    }
+  };
 
   const handleCreateUser = async (cachedUser: any, role: string) => {
     try {
-      await fetch('/api/users', {
+      await fetch(`${API_URL}/api/users`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           telegram_chat_id: cachedUser.chat_id,
           username: cachedUser.username,
           first_name: cachedUser.first_name,
           last_name: cachedUser.last_name || '',
           role,
-          manager_id: user?.id, // Assign to current user if manager, or select...
+          manager_id: user?.id,
           establishment_id: 1
         })
       });
       setShowAddModal(false);
-      fetch('/api/users').then(res => res.json()).then(setUsers);
+      loadData();
     } catch (e) {
       console.error(e);
     }
@@ -68,13 +73,19 @@ export default function Team() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-2xl p-6 space-y-4">
-            <h2 className="text-xl font-bold">Добавить сотрудника</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">Добавить сотрудника</h2>
+              <button onClick={loadData} className="text-blue-600 text-sm">Обновить</button>
+            </div>
             <p className="text-sm text-gray-500">Выберите пользователя из тех, кто писал боту:</p>
             
             <div className="max-h-60 overflow-y-auto space-y-2">
               {cachedUsers.length === 0 ? (
                 <div className="text-center py-4 text-gray-400 text-sm">
-                  Нет новых пользователей. Попросите сотрудника написать /start боту.
+                  <p>Нет новых пользователей.</p>
+                  <p className="mt-2">1. Откройте бота в Telegram</p>
+                  <p>2. Нажмите /start</p>
+                  <p>3. Нажмите "Обновить" здесь</p>
                 </div>
               ) : (
                 cachedUsers.map(cu => (
