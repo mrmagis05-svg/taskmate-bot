@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, Repeat } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { API_URL } from "./config"
+
 
 export default function CreateTask() {
   const { user } = useAuth();
@@ -17,7 +19,7 @@ export default function CreateTask() {
   });
 
   useEffect(() => {
-    fetch('/api/users').then(res => res.json()).then(setUsers);
+    fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +30,7 @@ export default function CreateTask() {
     }
 
     try {
-      await fetch('/api/tasks', {
+      await fetch('${API_URL}/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
