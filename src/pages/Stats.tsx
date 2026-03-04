@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import WebhookSimulator from '../components/WebhookSimulator';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 const data = [
   { name: 'Пн', tasks: 12 },
