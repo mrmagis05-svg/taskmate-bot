@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { API_URL } from "./config"
 
 // Mock types for our auth context
 export type UserRole = 'admin' | 'manager' | 'employee';
@@ -75,7 +76,7 @@ export function useAuth() {
 // Helper to fetch users for the mock login screen
 export async function fetchUsers() {
   try {
-    const res = await fetch('https://taskmate-worker.mr-magis05.workers.dev/api/users');
+    const res = await fetch('${API_URL}/api/users');
     return await res.json();
   } catch (e) {
     console.error(e);
