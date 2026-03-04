@@ -2,13 +2,15 @@ import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Clock, AlertCircle, BarChart3, Plus, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_URL } from "./config"
+
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [stats, setStats] = useState({ total: 0, completed: 0, overdue: 0 });
 
   useEffect(() => {
-    fetch('/api/stats')
+    fetch('${API_URL}/api/stats')
       .then(res => res.json())
       .then(setStats);
   }, []);
