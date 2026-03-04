@@ -76,7 +76,7 @@ export function useAuth() {
 // Helper to fetch users for the mock login screen
 export async function fetchUsers() {
   try {
-    const res = await fetch('${API_URL}/api/users');
+    const res = await fetch(`${API_URL}/api/users`);
     return await res.json();
   } catch (e) {
     console.error(e);
