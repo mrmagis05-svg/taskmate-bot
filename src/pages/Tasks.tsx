@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CheckCircle2, Circle, Clock, AlertCircle, Filter } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 interface Task {
   id: number;
