@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, Users, Repeat } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 
 export default function CreateTask() {
