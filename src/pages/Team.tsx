@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserPlus, Search } from 'lucide-react';
+import { API_URL } from "./config"
 
 export default function Team() {
   const { user } = useAuth();
@@ -9,15 +10,15 @@ export default function Team() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    fetch('/api/users').then(res => res.json()).then(setUsers);
+    fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
     if (user?.role === 'admin') {
-      fetch('/api/telegram/cache').then(res => res.json()).then(setCachedUsers);
+      fetch('${API_URL}/api/telegram/cache').then(res => res.json()).then(setCachedUsers);
     }
   }, [user]);
 
   const handleCreateUser = async (cachedUser: any, role: string) => {
     try {
-      await fetch('/api/users', {
+      await fetch('${API_URL}/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -31,7 +32,7 @@ export default function Team() {
         })
       });
       setShowAddModal(false);
-      fetch('/api/users').then(res => res.json()).then(setUsers);
+      fetch('${API_URL}/api/users').then(res => res.json()).then(setUsers);
     } catch (e) {
       console.error(e);
     }
