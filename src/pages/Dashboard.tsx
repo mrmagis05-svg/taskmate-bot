@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState({ total: 0, completed: 0, overdue: 0 });
 
   useEffect(() => {
-    fetch('${API_URL}/api/stats')
+    fetch(`${API_URL}/api/stats`)
       .then(res => res.json())
       .then(setStats);
   }, []);
