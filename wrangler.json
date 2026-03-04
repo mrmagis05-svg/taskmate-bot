@@ -1,0 +1,17 @@
+{
+	"name": "taskmate-bot",
+	"main": "worker.ts",
+	"compatibility_date": "2024-03-04",
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "taskmate-db",
+			"database_id": "5e5ab683-169a-4d32-946a-c7cc82eb433c"
+		},
+		{
+			"binding": "taskmate_db",
+			"database_name": "taskmate-db",
+			"database_id": "84382aeb-5b0e-45b0-8044-d4142ff92055"
+		}
+	]
+}
