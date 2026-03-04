@@ -2,7 +2,7 @@ import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Clock, AlertCircle, BarChart3, Plus, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { API_URL } from "./config"
+import { API_URL } from "../config"
 
 
 export default function Dashboard() {
