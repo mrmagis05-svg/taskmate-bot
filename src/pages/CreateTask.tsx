@@ -19,7 +19,9 @@ export default function CreateTask() {
   });
 
   useEffect(() => {
-    fetch(`${API_URL}/api/users`, { headers: getAuthHeaders() }).then(res => res.json()).then(setUsers);
+
+    fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
+
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

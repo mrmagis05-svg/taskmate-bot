@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { API_URL } from "../config"
 
 // Mock types for our auth context
 export type UserRole = 'admin' | 'manager' | 'employee';
@@ -119,10 +120,7 @@ import { API_URL } from '../config';
 // Helper to fetch users for the mock login screen
 export async function fetchUsers() {
   try {
-    // We might need a special header or just allow public access for this specific endpoint
-    // for the sake of the "login screen" which lists users.
     const res = await fetch(`${API_URL}/api/users`);
-    if (!res.ok) throw new Error('Failed to fetch users');
     return await res.json();
   } catch (e) {
     console.error(e);

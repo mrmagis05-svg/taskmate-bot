@@ -7,6 +7,7 @@ import { cn } from '../lib/utils';
 import { API_URL } from '../config';
 import TaskDetails from '../components/TaskDetails';
 
+
 interface Task {
   id: number;
   title: string;
@@ -31,14 +32,7 @@ export default function Tasks({ filter }: { filter?: 'overdue' | 'all' }) {
   const fetchTasks = async () => {
     if (!user) return;
     try {
-      let url = `${API_URL}/api/tasks?`;
-      if (filter === 'overdue') {
-        url += 'overdue=true';
-      }
-      
-      const res = await fetch(url, {
-        headers: getAuthHeaders()
-      });
+      const res = await fetch(`${API_URL}/api/tasks?user_id=${user.id}&role=${user.role}`);
       const data = await res.json();
       setTasks(data);
     } catch (e) {
