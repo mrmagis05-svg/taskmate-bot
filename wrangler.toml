@@ -1,0 +1,12 @@
+name = "taskmate-bot"
+main = "worker.ts"
+compatibility_date = "2024-03-04"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "taskmate-db"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+[vars]
+BOT_TOKEN = "dummy_token"
+ADMIN_CHAT_ID = "123456789"

@@ -93,7 +93,7 @@ async function handleApiRequest(request: Request, env: Env, url: URL): Promise<R
   const db = new D1(env.DB);
   const user = await authFromChatId(request, env);
 
-  if (!user && !path.startsWith("/api/telegram/cache")) { // Allow cache access for dev setup or public if needed? No, usually protected.
+  if (!user && !path.startsWith("/api/telegram/cache") && !(path === "/api/users" && request.method === "GET")) {
       // For the purpose of this demo, we might be lenient, but specs say "Worker checks x-chat-id".
       // If no user found, return 401.
       // Exception: maybe /api/users for initial setup if no users exist?
@@ -120,10 +120,10 @@ async function handleApiRequest(request: Request, env: Env, url: URL): Promise<R
       }
       
       // Manager can only see their employees (or everyone? Specs: "Manager — имеет доступ только к своим подчинённым")
-      if (user.role === 'manager') {
+      if (user?.role === 'manager') {
          query += " AND (manager_id = ? OR id = ?)";
          params.push(user.id, user.id);
-      } else if (user.role === 'employee') {
+      } else if (user?.role === 'employee') {
          // Employee sees themselves?
          query += " AND id = ?";
          params.push(user.id);

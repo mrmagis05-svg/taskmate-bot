@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { UserPlus, Search } from 'lucide-react';
 import { API_URL } from '../config';
 
-
 export default function Team() {
   const { user, getAuthHeaders } = useAuth();
   const [users, setUsers] = useState<any[]>([]);
@@ -11,10 +10,7 @@ export default function Team() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
-    if (user?.role === 'admin') {
-      fetch(`${API_URL}/api/telegram/cache`).then(res => res.json()).then(setCachedUsers);
-    }
+    loadData();
   }, [user]);
 
   const loadData = () => {
@@ -40,7 +36,7 @@ export default function Team() {
         })
       });
       setShowAddModal(false);
-      fetch(`${API_URL}/api/users`).then(res => res.json()).then(setUsers);
+      loadData();
     } catch (e) {
       console.error(e);
     }
